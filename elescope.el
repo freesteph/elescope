@@ -1,5 +1,7 @@
 ;;; elescope --- Summary
 
+;; -*- lexical-binding: t -*-
+
 ;;; Commentary:
 ;;; Clone remote projects in a flash.
 
@@ -15,30 +17,34 @@
   '(github gitlab)
   "Forges understood by elescope.")
 
+(defvar elescope--debounce-timer nil)
+
 (defun elescope--parse-gh (data)
-  "Parse the DATA returned by GitHub and maps a list of names."
+  "Parse the DATA returned by GitHub and maps on the full name attribute."
   (mapcar
-   (lambda (i) (alist-get 'name i))
+   (lambda (i) (alist-get 'full_name i))
    (seq-take (alist-get 'items data) 10)))
 
 (defun elescope--call-gh (name)
   "Search for GitHub repositories matching NAME."
   (request
-       "https://api.github.com/search/repositories"
-       :params '(("q" . name))
-       :parser 'json-read
-       :success (cl-function
-                 (lambda (&key data &allow-other-keys)
-                   (let ((results (elescope--parse-gh data)))
-                     (ivy-update-candidates results))))))
+    "https://api.github.com/search/repositories"
+    :params (list (cons "q" name))
+    :parser 'json-read
+    :success (cl-function
+              (lambda (&key data &allow-other-keys)
+                (let ((results (elescope--parse-gh data)))
+                  (ivy-update-candidates results))))))
 
-(defun elescope--cb (str)
+(defun elescope--search (str)
   "Handle the minibuffer STR query and search the relevant forge."
   (or
    (ivy-more-chars)
    (progn
-     (message "firing request for %s" str)
-     (elescope--call-gh str)
+     (and (timerp elescope--debounce-timer)
+          (cancel-timer elescope--debounce-timer))
+     (setf elescope--debounce-timer
+           (run-at-time "2 sec" nil #'elescope--call-gh str))
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
@@ -51,10 +57,11 @@ prompt a forge to search from (defaults to GitHub)."
   (if select-forges
       (completing-read "Forge: " elescope-forges)
     (let ((forge 'github))
-      (ivy-read "Project: " #'elescope--cb
+      (ivy-read "Project: " #'elescope--search
                 :dynamic-collection t
                 :action (lambda (res) (message res))
                 :caller 'elescope-checkout))))
+
 
 (provide 'elescope)
 ;;; elescope.el ends here
