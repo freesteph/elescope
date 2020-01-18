@@ -1,0 +1,12 @@
+* Elescope
+
+** Overview
+Most of programming really is looking at other people's code. Until
+Emacs can remotely open and browse remote repositories, Elescope will
+prompt a forge then auto-complete the repo name and clone it into a
+directory of your choice (~elescope-root-folder~).
+
+** Usage
+- ~package-install~ ~RET~ ~elescope~ ~RET~
+- ~customize-variable~ ~elescope-root-folder~
+- ~elescope-clone~.
