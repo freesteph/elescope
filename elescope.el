@@ -48,12 +48,21 @@
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
+(defun elescope--ensure-root ()
+  "Make sure there is a root to checkout into."
+  (unless (and
+           elescope-root-folder
+           (file-directory-p elescope-root-folder))
+    (user-error "You need to set the 'elescope-root-folder' variable before
+    checking out any project")))
+
 (defun elescope-checkout (select-forges)
   "Prompt a repository name to search for.
 
 If the function is called with the prefix SELECT-FORGES argument,
 prompt a forge to search from (defaults to GitHub)."
   (interactive "P")
+  (elescope--ensure-root)
   (if select-forges
       (completing-read "Forge: " elescope-forges)
     (let ((forge 'github))
