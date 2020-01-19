@@ -4,6 +4,8 @@
 
 ** Overview
 
+[[https://github.com/freesteph/elescope/raw/master/elescope-demo.gif]]
+
 Most of programming lies in other people's code, and in
 Emacs. Elescope brings you the best of both by allowing you to quickly
 search and clone any project found on the main forges (*only GitHub at
