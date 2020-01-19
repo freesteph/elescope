@@ -10,8 +10,15 @@
 
 (defcustom elescope-root-folder nil
   "Directory to clone projects into."
-  :group 'elescope-variable
+  :group 'elescope
   :type 'directory)
+
+(defcustom elescope-clone-depth 1
+  "Depth argument to be passed to git clone.
+
+Defaults to 1 which makes all clones shallow clones."
+  :group 'eslescope
+  :type 'integer)
 
 (defvar elescope-forges
   '(github gitlab)
@@ -48,6 +55,20 @@
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
+(defun elescope--clone-gh (path)
+  "Clone the GitHub project identified by PATH."
+  (let* ((url (format "https://github.com/%s" path))
+         (name (cadr (split-string path "/")))
+         (destination (expand-file-name name elescope-root-folder))
+         (command (format
+                   "git clone --depth=%s %s %s"
+                   elescope-clone-depth
+                   url
+                   destination)))
+    (if (eql 0 (shell-command command))
+        (find-file destination)
+      (user-error "Something went wrong whilst cloning the project"))))
+
 (defun elescope--ensure-root ()
   "Make sure there is a root to checkout into."
   (unless (and
@@ -68,7 +89,7 @@ prompt a forge to search from (defaults to GitHub)."
     (let ((forge 'github))
       (ivy-read "Project: " #'elescope--search
                 :dynamic-collection t
-                :action (lambda (res) (message res))
+                :action #'elescope--clone-gh
                 :caller 'elescope-checkout))))
 
 
