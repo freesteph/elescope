@@ -44,7 +44,7 @@
      (and (timerp elescope--debounce-timer)
           (cancel-timer elescope--debounce-timer))
      (setf elescope--debounce-timer
-           (run-at-time "2 sec" nil #'elescope--call-gh str))
+           (run-at-time "0.7 sec" nil #'elescope--call-gh str))
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
