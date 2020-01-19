@@ -1,6 +1,9 @@
 * Elescope
 
+[[https://github.com/freesteph/elescope/raw/master/elescope-logo.png]]
+
 ** Overview
+
 Most of programming lies in other people's code, and in
 Emacs. Elescope brings you the best of both by allowing you to quickly
 search and clone any project found on the main forges (*only GitHub at
@@ -10,7 +13,7 @@ This package uses [[https://github.com/abo-abo/swiper][ivy]] and [[https://githu
 
 ** Usage
 1. Put this package somewhere familiar and load it;
-2. - ~customize-variable~ ~elescope-root-folder~ to tell Elescope
+2. ~customize-variable~ ~elescope-root-folder~ to tell Elescope
    where to clone;
 3. ~elescope-checkout~.
 
