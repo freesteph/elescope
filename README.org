@@ -1,12 +1,32 @@
 * Elescope
 
 ** Overview
-Most of programming really is looking at other people's code. Until
-Emacs can remotely open and browse remote repositories, Elescope will
-prompt a forge then auto-complete the repo name and clone it into a
-directory of your choice (~elescope-root-folder~).
+Most of programming lies in other people's code, and in
+Emacs. Elescope brings you the best of both by allowing you to quickly
+search and clone any project found on the main forges (*only GitHub at
+the moment*, until the author manages to implement other ones).
+
+This package uses [[https://github.com/abo-abo/swiper][ivy]] and [[https://github.com/tkf/emacs-request][request]].
 
 ** Usage
-- ~package-install~ ~RET~ ~elescope~ ~RET~
-- ~customize-variable~ ~elescope-root-folder~
-- ~elescope-clone~.
+1. Put this package somewhere familiar and load it;
+2. - ~customize-variable~ ~elescope-root-folder~ to tell Elescope
+   where to clone;
+3. ~elescope-checkout~.
+
+** Configuration
+
+*** ~elescope-root-folder~
+
+Where to clone repos. No default set.
+
+*** ~elescope-clone-depth~
+
+How deep should the repos be cloned. Defaults to 1 so all clones are
+shallow.
+
+** See also
+
+Packages by actual Lisp programmers:
+
+- [[https://github.com/dgtized/github-clone.el][github-clone.el]].

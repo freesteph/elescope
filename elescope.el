@@ -7,6 +7,7 @@
 
 ;;; Code:
 (require 'request)
+(require 'ivy)
 
 (defcustom elescope-root-folder nil
   "Directory to clone projects into."
