@@ -56,7 +56,7 @@ Defaults to 1 which makes all clones shallow clones."
    (seq-take (alist-get 'items data) 10)))
 
 (defun elescope--call-gh (name)
-  "Search for GitHub repositories matching NAME."
+  "Search for GitHub repositories matching NAME and update the minibuffer with the results."
   (request
     "https://api.github.com/search/repositories"
     :params (list (cons "q" name))
@@ -67,7 +67,7 @@ Defaults to 1 which makes all clones shallow clones."
                   (ivy-update-candidates results))))))
 
 (defun elescope--search (str)
-  "Handle the minibuffer STR query and search the relevant forge."
+  "Debounce minibuffer input and pass the resulting STR to the lookup function."
   (or
    (ivy-more-chars)
    (progn
@@ -93,7 +93,7 @@ Defaults to 1 which makes all clones shallow clones."
       (user-error "Something went wrong whilst cloning the project"))))
 
 (defun elescope--ensure-root ()
-  "Make sure there is a root to checkout into."
+  "Stop execution if no root directory is set to clone into."
   (unless (and
            elescope-root-folder
            (file-directory-p elescope-root-folder))
