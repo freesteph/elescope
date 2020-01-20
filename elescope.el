@@ -1,4 +1,4 @@
-;;; elescope --- Summary
+;;; elescope --- Clone remote projects in a flash -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020 Stéphane Maniaci
 
@@ -23,8 +23,6 @@
 ;; along with elescope.el.  If not, see
 ;; <http://www.gnu.org/licenses/>.
 
-
-;; -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;; Clone remote projects in a flash.
