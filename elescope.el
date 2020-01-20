@@ -43,6 +43,16 @@ Defaults to 1 which makes all clones shallow clones."
   :group 'eslescope
   :type 'integer)
 
+(defcustom elescope-query-delay "0.7 sec"
+  "Time to wait before considering the minibuffer input ready for querying.
+
+How long to wait before considering the minibuffer input a valid
+query.  This helps avoid firing a query for every single letter
+typed.  Defaults to 0.7 sec and can be set to any value understood
+by `run-at-time'."
+  :group 'elescope
+  :type 'string)
+
 (defvar elescope-forges
   '(github gitlab)
   "Forges understood by elescope.")
@@ -74,7 +84,7 @@ Defaults to 1 which makes all clones shallow clones."
      (and (timerp elescope--debounce-timer)
           (cancel-timer elescope--debounce-timer))
      (setf elescope--debounce-timer
-           (run-at-time "0.7 sec" nil #'elescope--call-gh str))
+           (run-at-time elescope-query-delay nil #'elescope--call-gh str))
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 

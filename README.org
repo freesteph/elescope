@@ -30,6 +30,13 @@ Where to clone repos. No default set.
 How deep should the repos be cloned. Defaults to 1 so all clones are
 shallow.
 
+*** ~elescope-query-delay~
+
+How long to wait before considering the minibuffer input a valid
+query. This helps avoid firing a query for every single letter typed.
+Defaults to 0.7 sec and can be set to any value understood by
+`run-at-time'."
+
 ** See also
 
 Packages by actual Lisp programmers:
