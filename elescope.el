@@ -58,12 +58,16 @@ by `run-at-time'."
   "Forges understood by elescope.")
 
 (defvar elescope--debounce-timer nil)
+(defvar elescope--strings '((no-results . "No matching repositories found.")))
 
 (defun elescope--parse-gh (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
-  (mapcar
-   (lambda (i) (alist-get 'full_name i))
-   (seq-take (alist-get 'items data) 10)))
+  (let ((results (alist-get 'items data))
+        (no-results-str (alist-get 'no-results elescope--strings)))
+    (or (and (seq-empty-p results) (list "" no-results-str))
+        (mapcar
+         (lambda (i) (alist-get 'full_name i))
+         (seq-take results 10)))))
 
 (defun elescope--call-gh (name)
   "Search for GitHub repositories matching NAME and update the minibuffer with the results."
@@ -90,17 +94,20 @@ by `run-at-time'."
 
 (defun elescope--clone-gh (path)
   "Clone the GitHub project identified by PATH."
-  (let* ((url (format "https://github.com/%s" path))
-         (name (cadr (split-string path "/")))
-         (destination (expand-file-name name elescope-root-folder))
-         (command (format
-                   "git clone --depth=%s %s %s"
-                   elescope-clone-depth
-                   url
-                   destination)))
-    (if (eql 0 (shell-command command))
-        (find-file destination)
-      (user-error "Something went wrong whilst cloning the project"))))
+  (unless (or (not path)
+              (not (seq-contains path "/"))
+              (equal path (alist-get 'no-results elescope--strings)))
+    (let* ((url (format "https://github.com/%s" path))
+           (name (cadr (split-string path "/")))
+           (destination (expand-file-name name elescope-root-folder))
+           (command (format
+                     "git clone --depth=%s %s %s"
+                     elescope-clone-depth
+                     url
+                     destination)))
+      (if (eql 0 (shell-command command))
+          (find-file destination)
+        (user-error "Something went wrong whilst cloning the project")))))
 
 (defun elescope--ensure-root ()
   "Stop execution if no root directory is set to clone into."
