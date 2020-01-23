@@ -95,7 +95,7 @@ by `run-at-time'."
 (defun elescope--clone-gh (path)
   "Clone the GitHub project identified by PATH."
   (unless (or (not path)
-              (not (seq-contains path "/"))
+              (not (seq-contains path ?/))
               (equal path (alist-get 'no-results elescope--strings)))
     (let* ((url (format "https://github.com/%s" path))
            (name (cadr (split-string path "/")))
