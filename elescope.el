@@ -31,6 +31,8 @@
 (require 'request)
 (require 'ivy)
 
+(defgroup elescope nil "Variables related to the Elescope package.")
+
 (defcustom elescope-root-folder nil
   "Directory to clone projects into."
   :group 'elescope
