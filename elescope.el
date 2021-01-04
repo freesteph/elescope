@@ -45,6 +45,14 @@ Defaults to 1 which makes all clones shallow clones."
   :group 'eslescope
   :type 'integer)
 
+
+(defcustom elescope-use-namespace nil
+  "Use project username as namespace for path.
+
+Default as nil"
+  :group 'byte-elescope
+  :type 'integer)
+
 (defcustom elescope-query-delay "0.7 sec"
   "Time to wait before considering the minibuffer input ready for querying.
 
@@ -100,16 +108,18 @@ by `run-at-time'."
               (not (seq-contains path ?/))
               (equal path (alist-get 'no-results elescope--strings)))
     (let* ((url (format "https://github.com/%s" path))
-           (name (cadr (split-string path "/")))
+	   (name (if elescope-use-namespace path (cadr (split-string path "/"))))
            (destination (expand-file-name name elescope-root-folder))
            (command (format
                      "git clone --depth=%s %s %s"
                      elescope-clone-depth
                      url
                      destination)))
-      (if (eql 0 (shell-command command))
-          (find-file destination)
-        (user-error "Something went wrong whilst cloning the project")))))
+      (if (file-directory-p destination)
+	  (find-file destination)
+	(if (eql 0 (shell-command command))
+            (find-file destination)
+          (user-error "Something went wrong whilst cloning the project"))))))
 
 (defun elescope--ensure-root ()
   "Stop execution if no root directory is set to clone into."
