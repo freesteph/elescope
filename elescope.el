@@ -46,12 +46,16 @@ Defaults to 1 which makes all clones shallow clones."
   :type 'integer)
 
 
-(defcustom elescope-use-namespace nil
-  "Use project username as namespace for path.
+(defcustom elescope-use-full-path nil
+  "Use the full project path for the resulting clone.
 
-Default as nil"
-  :group 'byte-elescope
-  :type 'integer)
+If non-nil, use the full project path including
+username/organisation to clone: cloning 'john/foo' and 'john/bar'
+results in two 'foo' and 'bar' clones inside a parent 'john'
+folder, as opposed to the default, flat hierarchy of 'foo' and
+'bar'."
+  :group 'elescope
+  :type 'boolean)
 
 (defcustom elescope-query-delay "0.7 sec"
   "Time to wait before considering the minibuffer input ready for querying.
@@ -108,7 +112,7 @@ by `run-at-time'."
               (not (seq-contains path ?/))
               (equal path (alist-get 'no-results elescope--strings)))
     (let* ((url (format "https://github.com/%s" path))
-	   (name (if elescope-use-namespace path (cadr (split-string path "/"))))
+	   (name (if elescope-use-full-path path (cadr (split-string path "/"))))
            (destination (expand-file-name name elescope-root-folder))
            (command (format
                      "git clone --depth=%s %s %s"
