@@ -115,8 +115,12 @@ by `run-at-time'."
 	   (name (if elescope-use-full-path path (cadr (split-string path "/"))))
            (destination (expand-file-name name elescope-root-folder))
            (command (format
-                     "git clone --depth=%s %s %s"
-                     elescope-clone-depth
+                     "git clone%s %s %s"
+		     (if elescope-clone-depth
+			 (format
+			  " --depth=%s"
+			  elescope-clone-depth)
+		       "")
                      url
                      destination)))
       (if (file-directory-p destination)
