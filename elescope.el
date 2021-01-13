@@ -45,6 +45,18 @@ Defaults to 1 which makes all clones shallow clones."
   :group 'eslescope
   :type 'integer)
 
+
+(defcustom elescope-use-full-path nil
+  "Use the full project path for the resulting clone.
+
+If non-nil, use the full project path including
+username/organisation to clone: cloning 'john/foo' and 'john/bar'
+results in two 'foo' and 'bar' clones inside a parent 'john'
+folder, as opposed to the default, flat hierarchy of 'foo' and
+'bar'."
+  :group 'elescope
+  :type 'boolean)
+
 (defcustom elescope-query-delay "0.7 sec"
   "Time to wait before considering the minibuffer input ready for querying.
 
@@ -100,16 +112,22 @@ by `run-at-time'."
               (not (seq-contains path ?/))
               (equal path (alist-get 'no-results elescope--strings)))
     (let* ((url (format "https://github.com/%s" path))
-           (name (cadr (split-string path "/")))
+	   (name (if elescope-use-full-path path (cadr (split-string path "/"))))
            (destination (expand-file-name name elescope-root-folder))
            (command (format
-                     "git clone --depth=%s %s %s"
-                     elescope-clone-depth
+                     "git clone%s %s %s"
+		     (if elescope-clone-depth
+			 (format
+			  " --depth=%s"
+			  elescope-clone-depth)
+		       "")
                      url
                      destination)))
-      (if (eql 0 (shell-command command))
-          (find-file destination)
-        (user-error "Something went wrong whilst cloning the project")))))
+      (if (file-directory-p destination)
+	  (find-file destination)
+	(if (eql 0 (shell-command command))
+            (find-file destination)
+          (user-error "Something went wrong whilst cloning the project"))))))
 
 (defun elescope--ensure-root ()
   "Stop execution if no root directory is set to clone into."

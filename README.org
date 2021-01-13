@@ -37,6 +37,14 @@ query. This helps avoid firing a query for every single letter typed.
 Defaults to 0.7 sec and can be set to any value understood by
 `run-at-time'."
 
+*** ~elescope-use-full-path~
+
+If non-nil, use the full project path including
+username/organisation to clone: cloning 'john/foo' and 'john/bar'
+results in two 'foo' and 'bar' clones inside a parent 'john'
+folder, as opposed to the default, flat hierarchy of 'foo' and
+'bar'.
+
 ** See also
 
 Packages by actual Lisp programmers:
