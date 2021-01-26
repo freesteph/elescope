@@ -23,7 +23,6 @@
 ;; along with elescope.el.  If not, see
 ;; <http://www.gnu.org/licenses/>.
 
-
 ;;; Commentary:
 ;;; Clone remote projects in a flash.
 
@@ -44,7 +43,6 @@
 Defaults to 1 which makes all clones shallow clones."
   :group 'eslescope
   :type 'integer)
-
 
 (defcustom elescope-use-full-path nil
   "Use the full project path for the resulting clone.
@@ -151,7 +149,6 @@ prompt a forge to search from (defaults to GitHub)."
                 :dynamic-collection t
                 :action #'elescope--clone-gh
                 :caller 'elescope-checkout))))
-
 
 (provide 'elescope)
 ;;; elescope.el ends here
