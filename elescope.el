@@ -85,7 +85,7 @@ by `run-at-time'."
   (let ((results (alist-get 'items data))
         (no-results-str (alist-get 'no-results elescope--strings)))
     (or (and (seq-empty-p results) (list "" no-results-str))
-        (mapcar #'elescope--parse-entry (seq-take results 10)))))
+        (mapcar #'elescope--parse-entry results))))
 
 (defun elescope--call-gh (name)
   "Search for GitHub repositories matching NAME and update the minibuffer with the results."
