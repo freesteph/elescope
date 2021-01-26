@@ -89,14 +89,14 @@ in the scope of that token."
     (let ((result (concat name " " desc)))
       (propertize result 'repo-name name))))
 
-(defun elescope/github/parse (data)
+(defun elescope--github-parse (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
   (let ((results (alist-get 'items data))
         (no-results-str (alist-get 'no-results elescope--strings)))
     (or (and (seq-empty-p results) (list "" no-results-str))
         (mapcar #'elescope--parse-entry results))))
 
-(defun elescope/github/call (name)
+(defun elescope--github-call (name)
   "Search for GitHub repositories matching NAME and update the minibuffer with the results."
   (request
     "https://api.github.com/search/repositories"
@@ -107,7 +107,7 @@ in the scope of that token."
                               (format "token %s" elescope-github-token))))
     :success (cl-function
               (lambda (&key data &allow-other-keys)
-                (let ((results (elescope/github/parse data)))
+                (let ((results (elescope--github-parse data)))
                   (ivy-update-candidates results))))
     :status-code '((401 . (lambda (&rest _)
                             (message (alist-get 'bad-credentials elescope--strings)))))))
@@ -120,11 +120,11 @@ in the scope of that token."
      (and (timerp elescope--debounce-timer)
           (cancel-timer elescope--debounce-timer))
      (setf elescope--debounce-timer
-           (run-at-time elescope-query-delay nil #'elescope/github/call str))
+           (run-at-time elescope-query-delay nil #'elescope--github-call str))
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
-(defun elescope/github/clone (entry)
+(defun elescope--github-clone (entry)
   "Clone the GitHub project designated by ENTRY."
   (let ((path (get-text-property 0 'repo-name entry)))
     (unless (or (not path)
@@ -163,7 +163,7 @@ in the scope of that token."
   (elescope--ensure-root)
   (ivy-read "Project: " #'elescope--search
                 :dynamic-collection t
-                :action #'elescope/github/clone
+                :action #'elescope--github-clone
                 :caller 'elescope-checkout))
 
 (provide 'elescope)
