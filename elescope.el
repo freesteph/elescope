@@ -76,7 +76,10 @@ in the scope of that token."
   :type 'string)
 
 (defvar elescope--debounce-timer nil)
-(defvar elescope--strings '((no-results . "No matching repositories found.")))
+
+(defvar elescope--strings
+  '((no-results . "No matching repositories found.")
+    (bad-credentials . "GitHub did not recognise your token; please double check `elescope-github-token'.")))
 
 (defun elescope--parse-entry (entry)
   "Parse ENTRY and return a candidate for ivy."
@@ -105,7 +108,9 @@ in the scope of that token."
     :success (cl-function
               (lambda (&key data &allow-other-keys)
                 (let ((results (elescope/github/parse data)))
-                  (ivy-update-candidates results))))))
+                  (ivy-update-candidates results))))
+    :status-code '((401 . (lambda (&rest _)
+                            (message (alist-get 'bad-credentials elescope--strings)))))))
 
 (defun elescope--search (str)
   "Debounce minibuffer input and pass the resulting STR to the lookup function."
