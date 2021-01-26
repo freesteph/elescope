@@ -1,6 +1,6 @@
 ;;; elescope --- Clone remote projects in a flash -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020 Stéphane Maniaci
+;; Copyright (C) 2021 Stéphane Maniaci
 
 ;; Author: Stéphane Maniaci <stephane dot maniaci at gmail.com>
 ;; URL: https://github.com/freesteph/elescope
