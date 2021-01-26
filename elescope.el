@@ -156,6 +156,7 @@ in the scope of that token."
     (user-error "You need to set the 'elescope-root-folder' variable before
     checking out any project")))
 
+;;;###autoload
 (defun elescope-checkout ()
   "Prompt a repository name to search for."
   (interactive)
