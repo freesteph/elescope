@@ -80,14 +80,14 @@ by `run-at-time'."
     (let ((result (concat name " " desc)))
       (propertize result 'repo-name name))))
 
-(defun elescope--parse-gh (data)
+(defun elescope/github/parse (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
   (let ((results (alist-get 'items data))
         (no-results-str (alist-get 'no-results elescope--strings)))
     (or (and (seq-empty-p results) (list "" no-results-str))
         (mapcar #'elescope--parse-entry results))))
 
-(defun elescope--call-gh (name)
+(defun elescope/github/call (name)
   "Search for GitHub repositories matching NAME and update the minibuffer with the results."
   (request
     "https://api.github.com/search/repositories"
@@ -95,7 +95,7 @@ by `run-at-time'."
     :parser 'json-read
     :success (cl-function
               (lambda (&key data &allow-other-keys)
-                (let ((results (elescope--parse-gh data)))
+                (let ((results (elescope/github/parse data)))
                   (ivy-update-candidates results))))))
 
 (defun elescope--search (str)
@@ -106,11 +106,11 @@ by `run-at-time'."
      (and (timerp elescope--debounce-timer)
           (cancel-timer elescope--debounce-timer))
      (setf elescope--debounce-timer
-           (run-at-time elescope-query-delay nil #'elescope--call-gh str))
+           (run-at-time elescope-query-delay nil #'elescope/github/call str))
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
-(defun elescope--clone-gh (entry)
+(defun elescope/github/clone (entry)
   "Clone the GitHub project designated by ENTRY."
   (let ((path (get-text-property 0 'repo-name entry)))
     (unless (or (not path)
@@ -154,7 +154,7 @@ prompt a forge to search from (defaults to GitHub)."
     (let ((forge 'github))
       (ivy-read "Project: " #'elescope--search
                 :dynamic-collection t
-                :action #'elescope--clone-gh
+                :action #'elescope/github/clone
                 :caller 'elescope-checkout))))
 
 (provide 'elescope)
