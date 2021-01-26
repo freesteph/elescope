@@ -65,6 +65,16 @@ by `run-at-time'."
   :group 'elescope
   :type 'string)
 
+(defcustom elescope-github-token nil
+  "Personal access token to use for identified GitHub requests.
+
+Such token can be obtained in GitHub's `Developer Settings' ->
+`Personal Access Tokens' and created with the `repo'
+permission.  This allows elescope to expose private repositories
+in the scope of that token."
+  :group 'elescope
+  :type 'string)
+
 (defvar elescope--debounce-timer nil)
 (defvar elescope--strings '((no-results . "No matching repositories found.")))
 
@@ -89,6 +99,9 @@ by `run-at-time'."
     "https://api.github.com/search/repositories"
     :params (list (cons "q" name))
     :parser 'json-read
+    :headers (and elescope-github-token
+                  (list (cons "Authorization"
+                              (format "token %s" elescope-github-token))))
     :success (cl-function
               (lambda (&key data &allow-other-keys)
                 (let ((results (elescope/github/parse data)))

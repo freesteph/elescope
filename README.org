@@ -14,6 +14,7 @@ GitHub at the moment but contributions are welcome).
 This package uses [[https://github.com/abo-abo/swiper][ivy]] and [[https://github.com/tkf/emacs-request][request]].
 
 ** Usage
+
 1. Put this package somewhere familiar and load it;
 2. ~customize-variable~ ~elescope-root-folder~ to tell Elescope
    where to clone;
@@ -30,13 +31,6 @@ Where to clone repos. No default set.
 How deep should the repos be cloned. Defaults to 1 so all clones are
 shallow.
 
-*** ~elescope-query-delay~
-
-How long to wait before considering the minibuffer input a valid
-query. This helps avoid firing a query for every single letter typed.
-Defaults to 0.7 sec and can be set to any value understood by
-`run-at-time'."
-
 *** ~elescope-use-full-path~
 
 If non-nil, use the full project path including
@@ -44,6 +38,18 @@ username/organisation to clone: cloning 'john/foo' and 'john/bar'
 results in two 'foo' and 'bar' clones inside a parent 'john'
 folder, as opposed to the default, flat hierarchy of 'foo' and
 'bar'.
+
+*** ~elescope-github-token~
+
+Token to use for identification on GitHub. This allows you to clone
+private repos.
+
+*** ~elescope-query-delay~
+
+How long to wait before considering the minibuffer input a valid
+query. This helps avoid firing a query for every single letter typed.
+Defaults to 0.7 sec and can be set to any value understood by
+`run-at-time'."
 
 ** See also
 
