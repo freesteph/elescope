@@ -8,8 +8,8 @@
 
 Most of programming lies in other people's code, and in
 Emacs. Elescope brings you the best of both by allowing you to quickly
-search and clone any project found on the main forges (*only GitHub at
-the moment*, until the author manages to implement other ones).
+search and clone any project found on the supported forges (only
+GitHub at the moment but contributions are welcome).
 
 This package uses [[https://github.com/abo-abo/swiper][ivy]] and [[https://github.com/tkf/emacs-request][request]].
 

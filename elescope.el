@@ -65,10 +65,6 @@ by `run-at-time'."
   :group 'elescope
   :type 'string)
 
-(defvar elescope-forges
-  '(github gitlab)
-  "Forges understood by elescope.")
-
 (defvar elescope--debounce-timer nil)
 (defvar elescope--strings '((no-results . "No matching repositories found.")))
 
@@ -142,20 +138,14 @@ by `run-at-time'."
     (user-error "You need to set the 'elescope-root-folder' variable before
     checking out any project")))
 
-(defun elescope-checkout (select-forges)
-  "Prompt a repository name to search for.
-
-If the function is called with the prefix SELECT-FORGES argument,
-prompt a forge to search from (defaults to GitHub)."
-  (interactive "P")
+(defun elescope-checkout ()
+  "Prompt a repository name to search for."
+  (interactive)
   (elescope--ensure-root)
-  (if select-forges
-      (completing-read "Forge: " elescope-forges)
-    (let ((forge 'github))
-      (ivy-read "Project: " #'elescope--search
+  (ivy-read "Project: " #'elescope--search
                 :dynamic-collection t
                 :action #'elescope/github/clone
-                :caller 'elescope-checkout))))
+                :caller 'elescope-checkout))
 
 (provide 'elescope)
 ;;; elescope.el ends here
