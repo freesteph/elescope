@@ -1,10 +1,12 @@
-;;; elescope --- Clone remote projects in a flash -*- lexical-binding: t -*-
+;;; elescope.el --- Seach and clone projects from the minibuffer -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2021 Stéphane Maniaci
 
-;; Author: Stéphane Maniaci <stephane dot maniaci at gmail.com>
+;; Author: Stéphane Maniaci <stephane.maniaci@gmail.com>
 ;; URL: https://github.com/freesteph/elescope
 ;; Package-Version: 20200117.410
+;; Package-Requires: ((emacs "25.1") (ivy "0.10") (request "0.3"))
+;; Keywords: vc
 ;; Version: 0.1
 
 ;; This file is NOT part of GNU Emacs.
@@ -27,21 +29,17 @@
 ;;; Clone remote projects in a flash.
 
 ;;; Code:
-(require 'request)
 (require 'ivy)
-
-(defgroup elescope nil "Variables related to the Elescope package.")
+(require 'request)
 
 (defcustom elescope-root-folder nil
   "Directory to clone projects into."
-  :group 'elescope
   :type 'directory)
 
 (defcustom elescope-clone-depth 1
   "Depth argument to be passed to git clone.
 
 Defaults to 1 which makes all clones shallow clones."
-  :group 'eslescope
   :type 'integer)
 
 (defcustom elescope-use-full-path nil
@@ -52,7 +50,6 @@ username/organisation to clone: cloning 'john/foo' and 'john/bar'
 results in two 'foo' and 'bar' clones inside a parent 'john'
 folder, as opposed to the default, flat hierarchy of 'foo' and
 'bar'."
-  :group 'elescope
   :type 'boolean)
 
 (defcustom elescope-query-delay "0.7 sec"
@@ -62,7 +59,6 @@ How long to wait before considering the minibuffer input a valid
 query.  This helps avoid firing a query for every single letter
 typed.  Defaults to 0.7 sec and can be set to any value understood
 by `run-at-time'."
-  :group 'elescope
   :type 'string)
 
 (defcustom elescope-github-token nil
@@ -72,7 +68,6 @@ Such token can be obtained in GitHub's `Developer Settings' ->
 `Personal Access Tokens' and created with the `repo'
 permission.  This allows elescope to expose private repositories
 in the scope of that token."
-  :group 'elescope
   :type 'string)
 
 (defvar elescope--debounce-timer nil)
