@@ -7,7 +7,7 @@
 ;; Package-Version: 20200117.410
 ;; Package-Requires: ((emacs "25.1") (ivy "0.10") (request "0.3"))
 ;; Keywords: vc
-;; Version: 0.1
+;; Version: 0.2
 
 ;; This file is NOT part of GNU Emacs.
 
