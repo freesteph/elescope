@@ -72,14 +72,20 @@ by `run-at-time'."
 (defvar elescope--debounce-timer nil)
 (defvar elescope--strings '((no-results . "No matching repositories found.")))
 
+(defun elescope--parse-entry (entry)
+  "Parse ENTRY and return a candidate for ivy."
+  (let ((name (alist-get 'full_name entry))
+        (desc (alist-get 'description entry)))
+    (add-face-text-property 0 (length desc) 'font-lock-comment-face nil desc)
+    (let ((result (concat name " " desc)))
+      (propertize result 'repo-name name))))
+
 (defun elescope--parse-gh (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
   (let ((results (alist-get 'items data))
         (no-results-str (alist-get 'no-results elescope--strings)))
     (or (and (seq-empty-p results) (list "" no-results-str))
-        (mapcar
-         (lambda (i) (alist-get 'full_name i))
-         (seq-take results 10)))))
+        (mapcar #'elescope--parse-entry (seq-take results 10)))))
 
 (defun elescope--call-gh (name)
   "Search for GitHub repositories matching NAME and update the minibuffer with the results."
@@ -104,28 +110,29 @@ by `run-at-time'."
      (list "" (format "Looking for repositories matching %s..." str)))
    0))
 
-(defun elescope--clone-gh (path)
-  "Clone the GitHub project identified by PATH."
-  (unless (or (not path)
-              (not (seq-contains path ?/))
-              (equal path (alist-get 'no-results elescope--strings)))
-    (let* ((url (format "https://github.com/%s" path))
-	   (name (if elescope-use-full-path path (cadr (split-string path "/"))))
-           (destination (expand-file-name name elescope-root-folder))
-           (command (format
-                     "git clone%s %s %s"
-		     (if elescope-clone-depth
-			 (format
-			  " --depth=%s"
-			  elescope-clone-depth)
-		       "")
-                     url
-                     destination)))
-      (if (file-directory-p destination)
-	  (find-file destination)
-	(if (eql 0 (shell-command command))
-            (find-file destination)
-          (user-error "Something went wrong whilst cloning the project"))))))
+(defun elescope--clone-gh (entry)
+  "Clone the GitHub project designated by ENTRY."
+  (let ((path (get-text-property 0 'repo-name entry)))
+    (unless (or (not path)
+                (not (seq-contains path ?/))
+                (equal path (alist-get 'no-results elescope--strings)))
+      (let* ((url (format "https://github.com/%s" path))
+	     (name (if elescope-use-full-path path (cadr (split-string path "/"))))
+             (destination (expand-file-name name elescope-root-folder))
+             (command (format
+                       "git clone%s %s %s"
+		       (if elescope-clone-depth
+			   (format
+			    " --depth=%s"
+			    elescope-clone-depth)
+		         "")
+                       url
+                       destination)))
+        (if (file-directory-p destination)
+	    (find-file destination)
+	  (if (eql 0 (shell-command command))
+              (find-file destination)
+            (user-error "Something went wrong whilst cloning the project")))))))
 
 (defun elescope--ensure-root ()
   "Stop execution if no root directory is set to clone into."
