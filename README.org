@@ -37,18 +37,18 @@ If non-nil, use the full project path including username/organisation
 to clone: cloning ~john/foo~ and ~john/bar~ results in:
 
  #+begin_src
-├── <elescope_root_folder>
-│   ├── john
-│   │   ├── foo
-│   │   └── bar
+└── <elescope_root_folder>
+    └── john
+        ├── bar
+        └── foo
  #+end_src
 
 as opposed to the default, flat hierarchy:
 
 #+begin_src
-├── <elescope_root_folder>
-│   ├── foo
-│   └── bar
+└── <elescope_root_folder>
+    ├── foo
+    └── bar
 #+end_src
 
 *** ~elescope-github-token~
