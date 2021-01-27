@@ -32,7 +32,9 @@
 (require 'ivy)
 (require 'request)
 
-(defgroup elescope nil "Variables related to the Elescope package.")
+(defgroup elescope () "Variables related to the Elescope package."
+  :group 'convenience
+  :link '(url-link "https://github.com/freesteph/elescope"))
 
 (defcustom elescope-root-folder nil
   "Directory to clone projects into."
@@ -130,7 +132,7 @@ in the scope of that token."
   "Clone the GitHub project designated by ENTRY."
   (let ((path (get-text-property 0 'repo-name entry)))
     (unless (or (not path)
-                (not (seq-contains path ?/))
+                (not (seq-contains-p path ?/))
                 (equal path (alist-get 'no-results elescope--strings)))
       (let* ((url (format "https://github.com/%s" path))
 	     (name (if elescope-use-full-path path (cadr (split-string path "/"))))
