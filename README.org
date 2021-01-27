@@ -54,7 +54,7 @@ as opposed to the default, flat hierarchy:
 *** ~elescope-github-token~
 
 Token to use for identification on GitHub. This allows you to clone
-private repos.
+private repos you have access to.
 
 *** ~elescope-query-delay~
 
@@ -65,6 +65,6 @@ Defaults to 0.7 sec and can be set to any value understood by
 
 ** See also
 
-Packages by actual Lisp programmers:
+Previous art:
 
 - [[https://github.com/dgtized/github-clone.el][github-clone.el]].
