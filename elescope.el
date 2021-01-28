@@ -41,9 +41,10 @@
   :type 'directory)
 
 (defcustom elescope-clone-depth 1
-  "Depth argument to be passed to git clone.
+  "If non-nil, depth argument to be passed to git.
 
-Defaults to 1 which makes all clones shallow clones."
+Defaults to 1 which makes all clones shallow.  If nil, a full
+clone is performed."
   :group 'eslescope
   :type 'integer)
 
