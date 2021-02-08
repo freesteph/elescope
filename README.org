@@ -1,5 +1,7 @@
 * Elescope
 
+[[https://melpa.org/#/elescope][file:https://melpa.org/packages/elescope-badge.svg]]
+
 [[https://github.com/freesteph/elescope/raw/master/elescope-logo.png]]
 
 ** Overview
@@ -15,10 +17,26 @@ This package uses [[https://github.com/abo-abo/swiper][ivy]] and [[https://githu
 
 ** Usage
 
-1. Put this package somewhere familiar and load it;
+*** Installation:
+
+1. Elescope is available on MELPA, otherwise copy the ~elescope.el~
+   file somewhere in your path and load it straight into your Emacs.
 2. ~customize-variable~ ~elescope-root-folder~ to tell Elescope
    where to clone;
 3. ~elescope-checkout~.
+
+For reference, this is the entry in my init file:
+
+#+begin_src emacs-lisp
+(use-package elescope
+  :ensure t
+  :config
+  (setf elescope-root-folder "~/build/"
+        elescope-clone-depth nil
+        elescope-use-full-path t))
+#+end_src
+
+See below for a list of configuration options.
 
 ** Configuration
 
