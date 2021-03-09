@@ -106,7 +106,7 @@ in the scope of that token."
     "https://api.github.com/search/repositories"
     :params (list (cons "q" name))
     :parser 'json-read
-    :headers (and elescope-github-token
+    :headers (and (> (length elescope-github-token) 0)
                   (list (cons "Authorization"
                               (format "token %s" elescope-github-token))))
     :success (cl-function
