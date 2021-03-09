@@ -85,13 +85,18 @@ in the scope of that token."
   '((no-results . "No matching repositories found.")
     (bad-credentials . "GitHub did not recognise your token; please double check `elescope-github-token'.")))
 
+(defun elescope--authenticated-p ()
+  "Whether Elescope is performing authenticated search and clones."
+  (> (length elescope-github-token) 0))
+
 (defun elescope--parse-entry (entry)
   "Parse ENTRY and return a candidate for ivy."
   (let ((name (alist-get 'full_name entry))
         (desc (alist-get 'description entry)))
     (add-face-text-property 0 (length desc) 'font-lock-comment-face nil desc)
     (let ((result (concat name " " desc)))
-      (propertize result 'repo-name name))))
+      (propertize result
+                  'entry entry))))
 
 (defun elescope--github-parse (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
@@ -106,7 +111,7 @@ in the scope of that token."
     "https://api.github.com/search/repositories"
     :params (list (cons "q" name))
     :parser 'json-read
-    :headers (and (> (length elescope-github-token) 0)
+    :headers (and (elescope--authenticated-p)
                   (list (cons "Authorization"
                               (format "token %s" elescope-github-token))))
     :success (cl-function
@@ -130,12 +135,16 @@ in the scope of that token."
 
 (defun elescope--github-clone (entry)
   "Clone the GitHub project designated by ENTRY."
-  (let ((path (get-text-property 0 'repo-name entry)))
+  (let* ((entry (get-text-property 0 'full-entry entry))
+         (path (alist-get 'full_name entry))
+         (clone-url-key (if (elescope--authenticated-p)
+                            'ssh_url
+                          'clone_url))
+         (clone-url (alist-get clone-url-key entry)))
     (unless (or (not path)
                 (not (seq-contains-p path ?/))
                 (equal path (alist-get 'no-results elescope--strings)))
-      (let* ((url (format "https://github.com/%s" path))
-	     (name (if elescope-use-full-path path (cadr (split-string path "/"))))
+      (let* ((name (if elescope-use-full-path path (cadr (split-string path "/"))))
              (destination (expand-file-name name elescope-root-folder))
              (command (format
                        "git clone%s %s %s"
@@ -144,7 +153,7 @@ in the scope of that token."
 			    " --depth=%s"
 			    elescope-clone-depth)
 		         "")
-                       url
+                       clone-url
                        destination)))
         (if (file-directory-p destination)
 	    (find-file destination)
