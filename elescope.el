@@ -96,7 +96,7 @@ in the scope of that token."
     (add-face-text-property 0 (length desc) 'font-lock-comment-face nil desc)
     (let ((result (concat name " " desc)))
       (propertize result
-                  'entry entry))))
+                  'full-entry entry))))
 
 (defun elescope--github-parse (data)
   "Parse the DATA returned by GitHub and maps on the full name attribute."
